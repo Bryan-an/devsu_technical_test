@@ -129,7 +129,9 @@ export const HomeScreen: React.FC<Props> = ({navigation}) => {
       )}
 
       <View style={styles.buttonContainer}>
-        <FilledButtonComponent text="Agregar">
+        <FilledButtonComponent
+          text="Agregar"
+          onPress={() => navigation.push('Form')}>
           <Icon name="plus" size={18} color="darkslategrey" />
         </FilledButtonComponent>
       </View>

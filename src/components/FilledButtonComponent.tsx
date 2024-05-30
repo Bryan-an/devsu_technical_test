@@ -2,13 +2,13 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  TouchableHighlightProps,
   TouchableOpacity,
+  TouchableOpacityProps,
 } from 'react-native';
 import React from 'react';
 
 interface Props extends React.PropsWithChildren {
-  onPress?: TouchableHighlightProps['onPress'];
+  onPress?: TouchableOpacityProps['onPress'];
   text: string;
   backgroundColor?: string;
   textColor?: string;

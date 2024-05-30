@@ -7,7 +7,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 export type HomeStackParamList = {
   Home: undefined;
   Details: {id: string};
-  Form: undefined;
+  Form?: {id: string};
 };
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();

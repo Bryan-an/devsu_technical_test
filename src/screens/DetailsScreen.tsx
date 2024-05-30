@@ -16,6 +16,7 @@ import {
   OutlinedButtonComponent,
 } from '@/components/index';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {BottomSheetView, BottomSheetModal} from '@gorhom/bottom-sheet';
 
 interface Props extends NativeStackScreenProps<HomeStackParamList, 'Details'> {}
 
@@ -26,6 +27,14 @@ export const DetailsScreen: React.FC<Props> = ({route, navigation}) => {
   const [product, setProduct] = useState<ProductModel.Response.GetOne | null>(
     null,
   );
+
+  const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
+
+  const snapPoints = React.useMemo(() => ['50%'], []);
+
+  const handlePresentModalPress = () => {
+    bottomSheetModalRef.current?.present();
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -46,6 +55,8 @@ export const DetailsScreen: React.FC<Props> = ({route, navigation}) => {
     if (!product) {
       return;
     }
+
+    bottomSheetModalRef.current?.dismiss();
 
     setIsDeleting(true);
 
@@ -100,19 +111,49 @@ export const DetailsScreen: React.FC<Props> = ({route, navigation}) => {
             {product.date_revision}
           </Text>
         </View>
-
         <View style={styles.buttonsContainer}>
-          <FilledButtonComponent text="Editar">
+          <FilledButtonComponent
+            text="Editar"
+            onPress={() => navigation.push('Form', {id: product.id})}>
             <Icon name="edit" size={18} color="darkslategrey" />
           </FilledButtonComponent>
-
           <OutlinedButtonComponent
             text="Eliminar"
-            onPress={handleDelete}
+            onPress={handlePresentModalPress}
+            // onPress={handleDelete}
             isLoading={isDeleting}>
             <Icon name="trash" size={18} color="darkslategrey" />
           </OutlinedButtonComponent>
         </View>
+
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={0}
+          snapPoints={snapPoints}>
+          <BottomSheetView style={styles.sheetContentContainer}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: 18,
+                color: 'darkslategrey',
+              }}>
+              ¿Estás seguro de eliminar el producto {product.name}?
+            </Text>
+
+            <View style={styles.buttonsContainer}>
+              <FilledButtonComponent text="Confirmar" onPress={handleDelete}>
+                <Icon name="check" size={18} color="darkslategrey" />
+              </FilledButtonComponent>
+
+              <OutlinedButtonComponent
+                text="Cancelar"
+                onPress={() => bottomSheetModalRef.current?.dismiss()}>
+                <Icon name="remove" size={18} color="darkslategrey" />
+              </OutlinedButtonComponent>
+            </View>
+          </BottomSheetView>
+        </BottomSheetModal>
       </View>
     )
   );
@@ -158,5 +199,9 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     marginTop: 24,
     gap: 12,
+  },
+  sheetContentContainer: {
+    flex: 1,
+    padding: 22,
   },
 });
